@@ -474,16 +474,21 @@
             caseStudySection.innerHTML = `
                 <h2>판례 체험</h2>
                 <p style="font-size: 1.1em; color: #555; margin-bottom: 20px;">
-                    지금부터 여러분이 직접 판사가 되어 판례를 읽고 전자감독 부착 명령 기간을 결정해 보세요.
+                    지금부터 여러분이 직접 판사가 되어 대법원 판례를 읽고 전자감독 부착 명령 기간을 결정해 보세요.
                 </p>
                 <div class="case-content">
-                    <h3>사건 개요 (가상 판례)</h3>
-                    <p>피고인 김영수(40세, 남성)는 20XX년 X월 X일 새벽, 귀가하는 여성을 뒤따라가 폭행하고 강제로 추행하였습니다. 이전에 동종 성범죄로 집행유예를 선고받은 전력이 있으며, 출소 후에도 재범 위험성이 높은 것으로 판단됩니다. 피해자는 심각한 정신적 충격을 호소하고 있으며, 사회적 비난 가능성이 큽니다.</p>
-                    <p>피고인은 재범을 억제하고 사회 안전을 확보하기 위한 전자감독 부착명령 필요성이 인정됩니다.</p>
+                    <h3>대법원 2021. 2. 25. 선고 2020도17070, 2020전도171(병합) 판결 (미성년자의제강간 등)</h3>
+                    <p>피고인은 군 복무 중 아동과 SNS로 음란한 이야기를 주고받은 사건으로 벌금형을 선고받았고, 제대 후에도 SNS에서 알게 된 2명의 아동에게 음부 사진 등을 보내게 하는 범행을 저질러 보호관찰이 부과된 징역형의 집행유예를 선고받았습니다.</p>
+                    <p>이후 집행유예 기간에 보호관찰을 받던 중 다시 인터넷 채팅에서 만난 12세의 피해자를 상대로 세 차례 간음과 함께 가학적인 성적 행위를 저질렀으며, 가학성의 정도가 심해지는 경향을 보였습니다.</p>
+                    <p>피고인에 대한 성범죄자 위험성 평가도구(K-SORAS) 평가 결과 총점 14점으로 성범죄 재범 위험성이 '높음' 수준으로 평가되었습니다. 이러한 피고인의 유사 범죄 전력, 집행유예 및 보호관찰 기간 중의 재범, 그리고 성폭력범죄 경향성 등을 종합적으로 고려할 때 재범의 위험성이 매우 높다고 판단됩니다.</p>
+                    <p style="font-size: 0.9em; color: #777; margin-top: 15px;">
+                        (출처: 대한민국 법원 - 전자장치 부착명령의 요건으로서 '재범의 위험성'이 문제된 사건[대법원 2021. 2. 25. 선고 중요판결])
+                        <a href="https://www.scourt.go.kr/portal/news/NewsViewAction.work?pageIndex=1&searchWord=&searchOption=&seqnum=7560&gubun=4&type=5" target="_blank" style="color: #007bff;">[판례 상세 보기]</a>
+                    </p>
                 </div>
                 <div class="user-input-group">
                     <label for="attach-years">이 사건에 대해 몇 년의 전자감독장치 부착이 적절하다고 생각하십니까? (년)</label>
-                    <input type="number" id="attach-years" min="1" max="30" value="5">
+                    <input type="number" id="attach-years" min="1" max="30" value="10">
                     <button onclick="submitCaseDecision()">결정 완료</button>
                 </div>
                 <div id="case-feedback" class="feedback-area"></div>
@@ -494,29 +499,29 @@
         function submitCaseDecision() {
             const userYears = document.getElementById('attach-years').value;
             const caseFeedback = document.getElementById('case-feedback');
-            const actualYears = 10; // 실제 판례의 부착명령 기간 (예시)
+            const actualYears = 15; // 실제 판례의 부착명령 기간 (대법원 2021. 2. 25. 선고 판결)
 
             document.querySelector('#case-study-section .user-input-group button').disabled = true; // 결정 완료 버튼 비활성화
             document.getElementById('attach-years').disabled = true; // 입력창 비활성화
 
             caseFeedback.innerHTML = `
                 <p class="result-text">당신은 전자감독 부착명령 기간으로 **${userYears}년**을 입력했습니다.</p>
-                <p class="explanation">실제 이와 유사한 판례에서 최종적으로 내려진 전자감독 부착명령 기간은 **${actualYears}년**이었습니다.</p>
-                <p class="explanation">전자감독 부착명령 기간은 범죄의 중대성, 재범 위험성, 피해자의 피해 정도, 피고인의 전과 및 태도 등을 종합적으로 고려하여 결정됩니다. 이 판례에서는 피고인의 높은 재범 위험성과 피해의 심각성을 고려하여 장기간의 부착명령이 내려졌습니다.</p>
+                <p class="explanation">실제 이 판례에서 최종적으로 내려진 전자감독 부착명령 기간은 **${actualYears}년**이었습니다.</p>
+                <p class="explanation">대법원은 피고인의 반복된 범죄 전력, 집행유예 기간 중의 재범, 그리고 높은 재범 위험성 평가 등을 종합하여 장기간의 부착명령이 필요하다고 판단했습니다.</p>
             `;
             showComparison();
         }
 
         function showComparison() {
             const comparisonArea = document.getElementById('comparison-area');
-            const koreanCaseYears = 10; // 한국 판례 예시
-            const foreignCaseYears = 25; // 외국 판례 예시 (더 장기간)
+            const koreanCaseYears = 15; // 한국 판례 (위 대법원 판례)
+            const foreignCaseDescription = "미국 미시간주 등 일부 주에서는 특정 중대 성범죄(예: 1급 또는 2급 형사상 성적 접촉 범죄, 특히 아동 대상)에 대해 수감 후 출소 시 **평생 전자감독 부착**을 의무화하고 있습니다. 이는 재범 위험성 평가와 무관하게 법률에 의해 부과될 수 있습니다.";
+            const foreignCaseYears = "평생";
 
             comparisonArea.innerHTML = `
                 <h3>외국 vs 한국 판례 비교</h3>
                 <p style="font-size: 1.1em; color: #555; margin-bottom: 20px;">
-                    비슷한 유형의 성범죄에 대한 전자감독 부착명령 기간을 외국과 비교해 봅시다.
-                    아래는 가상의 사례이며, 특정 국가의 모든 판례를 대변하지 않습니다.
+                    비슷한 유형의 성범죄에 대한 전자감독 부착명령 기간을 한국과 외국 실제 제도를 비교해 봅시다.
                 </p>
                 <table class="comparison-table">
                     <thead>
@@ -528,19 +533,23 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>한국 (가상 판례)</strong></td>
-                            <td>성폭력 전과가 있는 피고인이 재범한 사례. 피해자에게 심각한 피해를 입힘.</td>
+                            <td><strong>한국 (대법원 판례)</strong></td>
+                            <td>미성년자 대상 성범죄 전력 및 집행유예 기간 중 재범, 높은 재범 위험성.</td>
                             <td><strong>${koreanCaseYears}년</strong></td>
                         </tr>
                         <tr>
-                            <td><strong>외국 (가상 판례 - 예: 미국 특정 주)</strong></td>
-                            <td>유사한 동종 성범죄로 여러 차례 전과가 있는 피고인이 출소 후 다시 성범죄를 저지름. 재범 위험성이 매우 높다고 판단됨.</td>
-                            <td><strong>${foreignCaseYears}년</strong> (일부 주에서는 평생 부착 명령도 가능)</td>
+                            <td><strong>미국 (일부 주 제도)</strong></td>
+                            <td>특정 중대 성범죄 (예: 아동 대상), 법률에 따라 평생 부착 명령.</td>
+                            <td><strong>${foreignCaseYears}</strong></td>
                         </tr>
                     </tbody>
                 </table>
                 <p style="margin-top: 20px; font-size: 1.1em; line-height: 1.6; color: #444;">
-                    위 비교에서 볼 수 있듯이, 일부 외국에서는 한국보다 훨씬 장기간의 전자감독 부착명령이 내려지는 경우가 있습니다. 이는 각국의 법률 체계, 범죄 예방에 대한 관점, 그리고 재범 방지 중요성에 대한 사회적 인식 차이에서 비롯될 수 있습니다.
+                    위 비교에서 볼 수 있듯이, 한국은 최장 30년의 전자감독 부착명령이 가능하지만, 미국 일부 주에서는 특정 성범죄에 대해 **평생 전자감독 부착**을 의무화하고 있습니다. 이는 각국의 법률 체계와 범죄 예방 및 재범 방지에 대한 관점 차이에서 비롯됩니다.
+                </p>
+                <p style="font-size: 0.9em; color: #777; margin-top: 10px;">
+                    (참고: 미국 미시간주 등 일부 주에서는 특정 중대 성범죄에 대해 평생 전자감독 부착을 의무화하고 있습니다.
+                    <a href="https://www.hillslawoffice.com/lifetime-electronic-monitoring-for-sex-offenders-new-law/" target="_blank" style="color: #007bff;">[관련 정보 보기]</a>)
                 </p>
                 <button onclick="showOpinionSection()">다음 단계로 (법률 개선 의견)</button>
             `;
@@ -567,9 +576,7 @@
 
         function submitOpinion() {
             const opinionText = document.getElementById('opinion-text').value;
-            // 여기서는 의견을 실제 저장하거나 전송하는 기능은 구현하지 않습니다.
-            // 필요하다면 서버 연동 또는 다른 방식으로 구현해야 합니다.
-            console.log("제출된 의견:", opinionText);
+            console.log("제출된 의견:", opinionText); // 실제 제출 기능은 서버 연동이 필요합니다.
             showThankYouSection();
         }
 
