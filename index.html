@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전자감독 인식개선 프로젝트</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 40px 60px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+        }
+        h1 {
+            color: #0056b3;
+            font-size: 2.8em;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+            line-height: 1.3;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.4em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.5);
+        }
+        #quiz-section, #case-study-section, #opinion-section, #thank-you-section {
+            display: none; /* 초기에는 숨김 */
+        }
+
+        /* 퀴즈 섹션 스타일 */
+        .question-container {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .question-text {
+            font-size: 1.6em;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 반응형 그리드 */
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            background-color: #e9f5ff;
+            border: 1px solid #cceeff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            font-size: 1.1em;
+            color: #333;
+        }
+        .option-label:hover {
+            background-color: #dbeeff;
+            border-color: #99ddff;
+        }
+        .option-label input[type="checkbox"] {
+            margin-right: 15px;
+            width: 22px;
+            height: 22px;
+            accent-color: #007bff; /* 체크박스 색상 */
+        }
+        .ox-options {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .ox-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+        }
+        .ox-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .ox-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.5);
+        }
+        .ox-btn:last-child { /* 'X' 버튼 */
+            background-color: #dc3545;
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+        }
+        .ox-btn:last-child:hover {
+            background-color: #c82333;
+        }
+        .feedback-area {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            font-size: 1.1em;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .feedback-area p.correct {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        .feedback-area p.incorrect {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        .feedback-area p.explanation {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .feedback-area button {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 25px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            margin-top: 15px;
+            box-shadow: none; /* 피드백 버튼은 그림자 제거 */
+        }
+        .feedback-area button:hover {
+            background-color: #5a6268;
+            transform: none;
+        }
+
+        /* 판례 체험 섹션 스타일 */
+        #case-study-section h2, #opinion-section h2 {
+            color: #0056b3;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+        }
+        .case-content {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 30px;
+            text-align: left;
+            line-height: 1.8;
+            font-size: 1.1em;
+            color: #444;
+        }
+        .case-content strong {
+            color: #0056b3;
+        }
+        .user-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .user-input-group label {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+        .user-input-group input[type="number"] {
+            padding: 12px 15px;
+            font-size: 1.2em;
+            width: 150px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .user-input-group input[type="number"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: #e9f5ff;
+            color: #0056b3;
+            font-weight: bold;
+        }
+        .comparison-table td {
+            background-color: #ffffff;
+            color: #333;
+        }
+        .result-text {
+            margin-top: 25px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #0056b3;
+        }
+
+        /* 의견 제출 섹션 스타일 */
+        #opinion-section textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-sizing: border-box;
+            line-height: 1.6;
+            resize: vertical;
+        }
+        #opinion-section textarea:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+        #opinion-section button {
+            margin-top: 25px;
+        }
+
+        /* 감사 섹션 스타일 */
+        #thank-you-section {
+            background-color: #e9f5ff;
+            border: 2px solid #aaddff;
+            padding: 50px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        #thank-you-section p {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #007bff;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div id="intro-section" class="container">
+        <h1>전자감독 인식개선 프로젝트</h1>
+        <button id="start-quiz-btn">퀴즈 시작</button>
+    </div>
+
+    <div id="quiz-section" class="container"></div>
+    <div id="case-study-section" class="container"></div>
+    <div id="opinion-section" class="container"></div>
+    <div id="thank-you-section" class="container"></div>
+
+    <script>
+        document.getElementById('start-quiz-btn').addEventListener('click', function() {
+            document.getElementById('intro-section').style.display = 'none';
+            showQuiz(1); // 1번 퀴즈 시작
+        });
+
+        let currentQuestion = 0;
+        let correctAnswersCount = 0;
+
+        const questions = [
+            // 1번 문제 (객관식, 다중 선택)
+            {
+                type: 'multiple-choice',
+                question: "다음 중 **전자감독(전자발찌)의 대상이 되는 범죄**는?",
+                options: [
+                    "성폭력사범",
+                    "강도사범",
+                    "교통사범",
+                    "살인사범",
+                    "사기사범",
+                    "마약사범"
+                ],
+                correctAnswer: [0, 1, 2, 3, 4, 5], // 모든 선택지 (인덱스 0부터 시작)
+                explanation: "전자감독은 **모든 범죄를 대상**으로 할 수 있습니다. 특정 강력범죄에 한정되지 않고, 재범 위험성이 있다고 판단되는 경우 다양한 범죄 유형에 적용될 수 있습니다."
+            },
+            // 2번부터 10번 문제 (OX 퀴즈)
+            {
+                type: 'ox',
+                question: "전자감독장치를 훼손하면 처벌받지 않는다.",
+                answer: false,
+                explanation: "전자감독장치를 훼손하거나 임의로 분리하면 7년 이하의 징역 또는 2천만원 이하의 벌금에 처해질 수 있습니다."
+            },
+            {
+                type: 'ox',
+                question: "전자감독은 범죄자의 이동을 24시간 실시간으로 추적한다.",
+                answer: true,
+                explanation: "전자감독은 특정 시간대, 특정 지역으로의 접근을 제한하거나 이동 경로를 실시간으로 확인하여 재범을 방지하고 피해자를 보호하는 역할을 합니다."
+            },
+            {
+                type: 'ox',
+                question: "전자감독 대상자는 일반인과 동일하게 모든 장소에 자유롭게 출입할 수 있다.",
+                answer: false,
+                explanation: "전자감독 대상자는 특정 시간대 외출 제한, 특정 지역 접근 금지 등 준수사항을 부과받으며, 이를 위반할 경우 제재를 받을 수 있습니다."
+            },
+            {
+                type: 'ox',
+                question: "전자감독은 오직 성범죄자에게만 부과되는 제도이다.",
+                answer: false,
+                explanation: "초기에는 성범죄를 중심으로 도입되었지만, 현재는 살인, 강도, 미성년자 유괴, 마약, 폭력 등 다양한 범죄에 적용될 수 있습니다. 중요한 것은 재범 위험성입니다."
+            },
+            {
+                type: 'ox',
+                question: "전자감독장치는 한번 부착되면 영구적으로 부착된다.",
+                answer: false,
+                explanation: "전자감독장치 부착 기간은 법원의 명령에 따라 달라지며, 최소 1개월에서 최장 30년까지 부과될 수 있습니다. 영구적인 부착은 아닙니다."
+            },
+            {
+                type: 'ox',
+                question: "전자감독은 재범률을 낮추는 데 효과적인 제도이다.",
+                answer: true,
+                explanation: "연구 결과에 따르면 전자감독은 대상자의 행동을 제한하고 감시하여 재범률을 낮추는 데 기여하는 효과적인 제도로 평가받고 있습니다."
+            },
+            {
+                type: 'ox',
+                question: "전자감독 대상자가 준수사항을 위반하면 아무런 조치도 취해지지 않는다.",
+                answer: false,
+                explanation: "전자감독 대상자가 준수사항을 위반할 경우 보호관찰관이 즉시 개입하며, 경중에 따라 경고, 임시구금, 구인, 구속영장 청구 등 필요한 조치가 취해집니다."
+            },
+            {
+                type: 'ox',
+                question: "전자감독장치는 착용자의 신체에 아무런 불편함도 주지 않는다.",
+                answer: false,
+                explanation: "전자감독장치는 착용자의 발목에 부착되므로 어느 정도의 이물감이나 불편함이 있을 수 있습니다. 하지만 일상생활에 크게 지장을 주지 않도록 설계되었습니다."
+            },
+            {
+                type: 'ox',
+                question: "전자감독 대상자는 출소 후에도 전자감독장치를 계속 착용해야 한다.",
+                answer: true,
+                explanation: "전자감독은 형기 종료 후에도 재범 위험이 있다고 판단되는 경우 부과됩니다. 즉, 출소 후에도 특정 기간 동안 전자감독장치를 착용하며 보호관찰을 받게 됩니다."
+            },
+        ];
+
+        function showQuiz(questionNum) {
+            const quizSection = document.getElementById('quiz-section');
+            quizSection.style.display = 'block';
+            quizSection.innerHTML = ''; // 기존 내용 지우기
+
+            if (questionNum > questions.length) {
+                showQuizResults(); // 퀴즈가 끝나면 결과 표시 후 판례 체험으로
+                return;
+            }
+
+            currentQuestion = questionNum;
+            const qData = questions[questionNum - 1];
+
+            let questionHtml = `
+                <div class="question-container">
+                    <h2>문제 ${questionNum}</h2>
+                    <p class="question-text">${qData.question}</p>
+            `;
+
+            if (qData.type === 'multiple-choice') {
+                questionHtml += '<div class="options-grid">';
+                qData.options.forEach((option, index) => {
+                    questionHtml += `
+                        <label class="option-label">
+                            <input type="checkbox" name="q1-option" value="${index}">
+                            ${index + 1}. ${option}
+                        </label>
+                    `;
+                });
+                questionHtml += '</div>';
+                questionHtml += '<button onclick="checkAnswerMultiChoice()">정답 확인</button>';
+            } else if (qData.type === 'ox') {
+                questionHtml += `
+                    <div class="ox-options">
+                        <button class="ox-btn" onclick="checkAnswerOX(${true})">O</button>
+                        <button class="ox-btn" onclick="checkAnswerOX(${false})">X</button>
+                    </div>
+                `;
+            }
+
+            questionHtml += `<div id="feedback-${questionNum}" class="feedback-area"></div>`;
+            questionHtml += `</div>`;
+            quizSection.innerHTML = questionHtml;
+        }
+
+        function checkAnswerMultiChoice() {
+            const selectedOptions = Array.from(document.querySelectorAll('input[name="q1-option"]:checked')).map(cb => parseInt(cb.value));
+            const qData = questions[0];
+            const feedbackArea = document.getElementById(`feedback-1`);
+
+            // 정답 확인 버튼은 한 번만 눌리도록 비활성화
+            document.querySelector('#quiz-section button').disabled = true;
+
+            if (selectedOptions.length === qData.correctAnswer.length &&
+                selectedOptions.every(val => qData.correctAnswer.includes(val))) {
+                feedbackArea.innerHTML = `<p class="correct">정답입니다! 🎉</p><p class="explanation">${qData.explanation}</p>`;
+                correctAnswersCount++;
+            } else {
+                feedbackArea.innerHTML = `<p class="incorrect">오답입니다. 😭</p><p class="explanation">${qData.explanation}</p>`;
+            }
+            feedbackArea.innerHTML += '<button onclick="showQuiz(2)">다음 문제로</button>';
+        }
+
+        function checkAnswerOX(userAnswer) {
+            const qData = questions[currentQuestion - 1];
+            const feedbackArea = document.getElementById(`feedback-${currentQuestion}`);
+
+            // OX 버튼 클릭 시 해당 버튼 비활성화 (다시 누를 수 없게)
+            document.querySelectorAll('.ox-btn').forEach(btn => btn.disabled = true);
+
+            if (userAnswer === qData.answer) {
+                feedbackArea.innerHTML = `<p class="correct">정답입니다! 🎉</p><p class="explanation">${qData.explanation}</p>`;
+                correctAnswersCount++;
+            } else {
+                feedbackArea.innerHTML = `<p class="incorrect">오답입니다. 😭</p><p class="explanation">${qData.explanation}</p>`;
+            }
+            feedbackArea.innerHTML += `<button onclick="showQuiz(${currentQuestion + 1})">다음 문제로</button>`;
+        }
+
+        function showQuizResults() {
+            const quizSection = document.getElementById('quiz-section');
+            quizSection.innerHTML = `
+                <h2>퀴즈 결과</h2>
+                <p style="font-size: 1.5em; margin-bottom: 25px;">총 ${questions.length}문제 중 **${correctAnswersCount}문제**를 맞히셨습니다!</p>
+                <button onclick="showCaseStudySection()">판례 체험 시작</button>
+            `;
+            quizSection.style.display = 'block';
+        }
+
+        function showCaseStudySection() {
+            document.getElementById('quiz-section').style.display = 'none';
+            const caseStudySection = document.getElementById('case-study-section');
+            caseStudySection.style.display = 'block';
+            caseStudySection.innerHTML = `
+                <h2>판례 체험</h2>
+                <p style="font-size: 1.1em; color: #555; margin-bottom: 20px;">
+                    지금부터 여러분이 직접 판사가 되어 판례를 읽고 전자감독 부착 명령 기간을 결정해 보세요.
+                </p>
+                <div class="case-content">
+                    <h3>사건 개요 (가상 판례)</h3>
+                    <p>피고인 김영수(40세, 남성)는 20XX년 X월 X일 새벽, 귀가하는 여성을 뒤따라가 폭행하고 강제로 추행하였습니다. 이전에 동종 성범죄로 집행유예를 선고받은 전력이 있으며, 출소 후에도 재범 위험성이 높은 것으로 판단됩니다. 피해자는 심각한 정신적 충격을 호소하고 있으며, 사회적 비난 가능성이 큽니다.</p>
+                    <p>피고인은 재범을 억제하고 사회 안전을 확보하기 위한 전자감독 부착명령 필요성이 인정됩니다.</p>
+                </div>
+                <div class="user-input-group">
+                    <label for="attach-years">이 사건에 대해 몇 년의 전자감독장치 부착이 적절하다고 생각하십니까? (년)</label>
+                    <input type="number" id="attach-years" min="1" max="30" value="5">
+                    <button onclick="submitCaseDecision()">결정 완료</button>
+                </div>
+                <div id="case-feedback" class="feedback-area"></div>
+                <div id="comparison-area"></div>
+            `;
+        }
+
+        function submitCaseDecision() {
+            const userYears = document.getElementById('attach-years').value;
+            const caseFeedback = document.getElementById('case-feedback');
+            const actualYears = 10; // 실제 판례의 부착명령 기간 (예시)
+
+            document.querySelector('#case-study-section .user-input-group button').disabled = true; // 결정 완료 버튼 비활성화
+            document.getElementById('attach-years').disabled = true; // 입력창 비활성화
+
+            caseFeedback.innerHTML = `
+                <p class="result-text">당신은 전자감독 부착명령 기간으로 **${userYears}년**을 입력했습니다.</p>
+                <p class="explanation">실제 이와 유사한 판례에서 최종적으로 내려진 전자감독 부착명령 기간은 **${actualYears}년**이었습니다.</p>
+                <p class="explanation">전자감독 부착명령 기간은 범죄의 중대성, 재범 위험성, 피해자의 피해 정도, 피고인의 전과 및 태도 등을 종합적으로 고려하여 결정됩니다. 이 판례에서는 피고인의 높은 재범 위험성과 피해의 심각성을 고려하여 장기간의 부착명령이 내려졌습니다.</p>
+            `;
+            showComparison();
+        }
+
+        function showComparison() {
+            const comparisonArea = document.getElementById('comparison-area');
+            const koreanCaseYears = 10; // 한국 판례 예시
+            const foreignCaseYears = 25; // 외국 판례 예시 (더 장기간)
+
+            comparisonArea.innerHTML = `
+                <h3>외국 vs 한국 판례 비교</h3>
+                <p style="font-size: 1.1em; color: #555; margin-bottom: 20px;">
+                    비슷한 유형의 성범죄에 대한 전자감독 부착명령 기간을 외국과 비교해 봅시다.
+                    아래는 가상의 사례이며, 특정 국가의 모든 판례를 대변하지 않습니다.
+                </p>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>구분</th>
+                            <th>사건 경위 (유사 사례)</th>
+                            <th>전자감독 부착명령 기간</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>한국 (가상 판례)</strong></td>
+                            <td>성폭력 전과가 있는 피고인이 재범한 사례. 피해자에게 심각한 피해를 입힘.</td>
+                            <td><strong>${koreanCaseYears}년</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>외국 (가상 판례 - 예: 미국 특정 주)</strong></td>
+                            <td>유사한 동종 성범죄로 여러 차례 전과가 있는 피고인이 출소 후 다시 성범죄를 저지름. 재범 위험성이 매우 높다고 판단됨.</td>
+                            <td><strong>${foreignCaseYears}년</strong> (일부 주에서는 평생 부착 명령도 가능)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top: 20px; font-size: 1.1em; line-height: 1.6; color: #444;">
+                    위 비교에서 볼 수 있듯이, 일부 외국에서는 한국보다 훨씬 장기간의 전자감독 부착명령이 내려지는 경우가 있습니다. 이는 각국의 법률 체계, 범죄 예방에 대한 관점, 그리고 재범 방지 중요성에 대한 사회적 인식 차이에서 비롯될 수 있습니다.
+                </p>
+                <button onclick="showOpinionSection()">다음 단계로 (법률 개선 의견)</button>
+            `;
+        }
+
+        function showOpinionSection() {
+            document.getElementById('case-study-section').style.display = 'none';
+            const opinionSection = document.getElementById('opinion-section');
+            opinionSection.style.display = 'block';
+            opinionSection.innerHTML = `
+                <h2>현행 법률 개선 의견</h2>
+                <p style="font-size: 1.1em; color: #555; margin-bottom: 20px;">
+                    현행 전자감독 제도는 특정 범죄 재범 위험성이 있는 대상자의 위치를 24시간 추적하고,
+                    특정 시간대 외출 제한, 특정 지역 접근 금지 등 준수사항을 부과하여 재범을 방지하고
+                    피해자를 보호하는 데 중점을 두고 운용되고 있습니다.
+                    <br><br>
+                    지금까지 퀴즈와 판례 체험을 통해 경험한 내용을 바탕으로, 현행 전자감독 제도를
+                    어떤 방향으로 개선하면 좋을지 자유롭게 의견을 작성해주세요.
+                </p>
+                <textarea id="opinion-text" placeholder="여기에 당신의 의견을 작성해주세요..."></textarea>
+                <button onclick="submitOpinion()">의견 제출 완료</button>
+            `;
+        }
+
+        function submitOpinion() {
+            const opinionText = document.getElementById('opinion-text').value;
+            // 여기서는 의견을 실제 저장하거나 전송하는 기능은 구현하지 않습니다.
+            // 필요하다면 서버 연동 또는 다른 방식으로 구현해야 합니다.
+            console.log("제출된 의견:", opinionText);
+            showThankYouSection();
+        }
+
+        function showThankYouSection() {
+            document.getElementById('opinion-section').style.display = 'none';
+            const thankYouSection = document.getElementById('thank-you-section');
+            thankYouSection.style.display = 'block';
+            thankYouSection.innerHTML = `
+                <p>감사합니다!</p>
+            `;
+        }
+    </script>
+</body>
+</html>
